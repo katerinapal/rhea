@@ -1,5 +1,13 @@
-import ext_assert_assert from "assert";
-import { containerjs as rhea } from "../lib/container.js";
+"use strict";
+
+var _assert = require("assert");
+
+var _assert2 = _interopRequireDefault(_assert);
+
+var _container = require("../lib/container.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /*
  * Copyright 2015 Red Hat Inc.
  *
@@ -17,28 +25,28 @@ import { containerjs as rhea } from "../lib/container.js";
  */
 'use strict';
 
-describe('reconnect', function() {
+describe('reconnect', function () {
     this.slow(150);
     var listener, socket;
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         var count = 0;
-        var container = rhea.create_container();
-        container.on('connection_open', function(context) {
+        var container = _container.containerjs.create_container();
+        container.on('connection_open', function (context) {
             count++;
             context.connection.local.open.hostname = 'test' + count;
         });
         container.on('disconnected', function (context) {});
-        listener = container.listen({port:0});
+        listener = container.listen({ port: 0 });
         listener.on('connection', function (s) {
             socket = s;
         });
-        listener.on('listening', function() {
+        listener.on('listening', function () {
             done();
         });
     });
 
-    afterEach(function() {
+    afterEach(function () {
         listener.close();
     });
 
@@ -47,8 +55,8 @@ describe('reconnect', function() {
         return map;
     }
 
-    it('reconnects successfully', function(done) {
-        var container = rhea.create_container();
+    it('reconnects successfully', function (done) {
+        var container = _container.containerjs.create_container();
         var count = 0;
         var disconnects = 0;
         var c = container.connect(add(listener.address(), 'reconnect_limit', 10));
@@ -57,18 +65,18 @@ describe('reconnect', function() {
         });
         c.on('connection_open', function (context) {
             count++;
-            ext_assert_assert.equal(context.connection.remote.open.hostname, 'test' + count);
+            _assert2.default.equal(context.connection.remote.open.hostname, 'test' + count);
             if (count === 1) {
                 socket.end();
             } else {
-                ext_assert_assert.equal(disconnects, 1);
+                _assert2.default.equal(disconnects, 1);
                 context.connection.close();
                 done();
             }
         });
     });
-    it('re-establishes link successfully', function(done) {
-        var container = rhea.create_container();
+    it('re-establishes link successfully', function (done) {
+        var container = _container.containerjs.create_container();
         var count = 0;
         var disconnects = 0;
         var c = container.connect(listener.address());
@@ -78,11 +86,11 @@ describe('reconnect', function() {
         });
         c.on('sender_open', function (context) {
             count++;
-            ext_assert_assert.equal(context.connection.remote.open.hostname, 'test' + count);
+            _assert2.default.equal(context.connection.remote.open.hostname, 'test' + count);
             if (count === 1) {
                 socket.end();
             } else {
-                ext_assert_assert.equal(disconnects, 1);
+                _assert2.default.equal(disconnects, 1);
                 context.connection.close();
                 done();
             }

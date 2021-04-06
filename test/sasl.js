@@ -1,5 +1,13 @@
-import ext_assert_assert from "assert";
-import { containerjs as rhea } from "../lib/container.js";
+"use strict";
+
+var _assert = require("assert");
+
+var _assert2 = _interopRequireDefault(_assert);
+
+var _container = require("../lib/container.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /*
  * Copyright 2015 Red Hat Inc.
  *
@@ -17,7 +25,7 @@ import { containerjs as rhea } from "../lib/container.js";
  */
 'use strict';
 
-describe('sasl plain', function() {
+describe('sasl plain', function () {
     this.slow(200);
     var container, listener;
 
@@ -25,33 +33,35 @@ describe('sasl plain', function() {
         return username.split("").reverse().join("") === password;
     }
 
-    beforeEach(function(done) {
-        container = rhea.create_container();
+    beforeEach(function (done) {
+        container = _container.containerjs.create_container();
         container.sasl_server_mechanisms.enable_plain(authenticate);
         container.on('disconnected', function () {});
-        listener = container.listen({port:0});
-        listener.on('listening', function() {
+        listener = container.listen({ port: 0 });
+        listener.on('listening', function () {
             done();
         });
     });
 
-    afterEach(function() {
+    afterEach(function () {
         listener.close();
     });
 
-    it('successfully authenticates', function(done) {
-        container.connect({username:'bob',password:'bob',port:listener.address().port}).on('connection_open', function(context) { context.connection.close(); done(); });
+    it('successfully authenticates', function (done) {
+        container.connect({ username: 'bob', password: 'bob', port: listener.address().port }).on('connection_open', function (context) {
+            context.connection.close();done();
+        });
     });
-    it('handles authentication failure', function(done) {
-        container.connect({username:'whatsit',password:'anyoldrubbish',port:listener.address().port}).on('connection_error', function(context) { 
+    it('handles authentication failure', function (done) {
+        container.connect({ username: 'whatsit', password: 'anyoldrubbish', port: listener.address().port }).on('connection_error', function (context) {
             var error = context.connection.get_error();
-            ext_assert_assert.equal(error.condition, 'amqp:unauthorized-access');
+            _assert2.default.equal(error.condition, 'amqp:unauthorized-access');
             done();
         });
     });
 });
 
-describe('sasl init hostname', function() {
+describe('sasl init hostname', function () {
     this.slow(200);
     var container, listener, hostname;
 
@@ -60,74 +70,75 @@ describe('sasl init hostname', function() {
         return true;
     }
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         hostname = undefined;
-        container = rhea.create_container();
+        container = _container.containerjs.create_container();
         container.sasl_server_mechanisms.enable_plain(authenticate);
         container.on('disconnected', function () {});
-        listener = container.listen({port:0});
-        listener.on('listening', function() {
+        listener = container.listen({ port: 0 });
+        listener.on('listening', function () {
             done();
         });
     });
 
-    afterEach(function() {
+    afterEach(function () {
         listener.close();
     });
 
-    it('uses host by default', function(done) {
-        container.connect({username:'a',password:'a', host:'localhost', port:listener.address().port}).on('connection_open', function(context) {
+    it('uses host by default', function (done) {
+        container.connect({ username: 'a', password: 'a', host: 'localhost', port: listener.address().port }).on('connection_open', function (context) {
             context.connection.close();
-            ext_assert_assert.equal(hostname, 'localhost');
+            _assert2.default.equal(hostname, 'localhost');
             done();
         });
     });
 
-    it('prefers servername to host', function(done) {
-        container.connect({username:'a',password:'b', servername:'somethingelse', host:'localhost', port:listener.address().port}).on('connection_open', function(context) {
+    it('prefers servername to host', function (done) {
+        container.connect({ username: 'a', password: 'b', servername: 'somethingelse', host: 'localhost', port: listener.address().port }).on('connection_open', function (context) {
             context.connection.close();
-            ext_assert_assert.equal(hostname, 'somethingelse');
+            _assert2.default.equal(hostname, 'somethingelse');
             done();
         });
     });
 
-    it('prefers sasl_init_hostname to servername or host', function(done) {
-        container.connect({username:'a',password:'b', sasl_init_hostname:'yetanother', servername:'somethingelse', host:'localhost', port:listener.address().port}).on('connection_open', function(context) {
+    it('prefers sasl_init_hostname to servername or host', function (done) {
+        container.connect({ username: 'a', password: 'b', sasl_init_hostname: 'yetanother', servername: 'somethingelse', host: 'localhost', port: listener.address().port }).on('connection_open', function (context) {
             context.connection.close();
-            ext_assert_assert.equal(hostname, 'yetanother');
+            _assert2.default.equal(hostname, 'yetanother');
             done();
         });
     });
 });
 
-
-describe('sasl anonymous', function() {
+describe('sasl anonymous', function () {
     this.slow(200);
 
     var container, listener;
 
-    beforeEach(function(done) {
-        container = rhea.create_container();
+    beforeEach(function (done) {
+        container = _container.containerjs.create_container();
         container.sasl_server_mechanisms.enable_anonymous();
         container.on('disconnected', function () {});
-        listener = container.listen({port:0});
-        listener.on('listening', function() {
+        listener = container.listen({ port: 0 });
+        listener.on('listening', function () {
             done();
         });
     });
 
-    afterEach(function() {
+    afterEach(function () {
         listener.close();
     });
 
-    it('successfully authenticates', function(done) {
-        container.connect({username:'bob',port:listener.address().port}).on('connection_open', function(context) { context.connection.close(); done(); });
+    it('successfully authenticates', function (done) {
+        container.connect({ username: 'bob', port: listener.address().port }).on('connection_open', function (context) {
+            context.connection.close();done();
+        });
     });
-    it('handles authentication failure', function(done) {
-        container.connect({username:'whatsit',password:'anyoldrubbish',port:listener.address().port}).on('connection_error', function(context) {
+    it('handles authentication failure', function (done) {
+        container.connect({ username: 'whatsit', password: 'anyoldrubbish', port: listener.address().port }).on('connection_error', function (context) {
             var error = context.connection.get_error();
-            ext_assert_assert.equal(error.condition, 'amqp:unauthorized-access');
-            ext_assert_assert.equal(error.description, 'No suitable mechanism; server supports ANONYMOUS');
+            _assert2.default.equal(error.condition, 'amqp:unauthorized-access');
+            _assert2.default.equal(error.description, 'No suitable mechanism; server supports ANONYMOUS');
             done();
         });
     });

@@ -1,7 +1,21 @@
-import ext_assert_assert from "assert";
-import { containerjs as rhea } from "../lib/container.js";
-import ext_fs_fs from "fs";
-import ext_path_path from "path";
+"use strict";
+
+var _assert = require("assert");
+
+var _assert2 = _interopRequireDefault(_assert);
+
+var _container = require("../lib/container.js");
+
+var _fs = require("fs");
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _path = require("path");
+
+var _path2 = _interopRequireDefault(_path);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /*
  * Copyright 2015 Red Hat Inc.
  *
@@ -19,18 +33,17 @@ import ext_path_path from "path";
  */
 'use strict';
 
-
-describe('ssl', function() {
+describe('ssl', function () {
     this.slow(200);
     var listener;
 
-    afterEach(function() {
+    afterEach(function () {
         if (listener) listener.close();
     });
 
     function success(server_conf, client_conf) {
-        return function(done) {
-            var container = server_conf.container || rhea.create_container();
+        return function (done) {
+            var container = server_conf.container || _container.containerjs.create_container();
 
             container.on('connection_open', function (context) {
                 if (server_conf.verification) server_conf.verification(context);
@@ -38,31 +51,31 @@ describe('ssl', function() {
             var server_options = server_conf.options || {};
             server_options.port = 0;
             if (server_options.transport === undefined) server_options.transport = 'tls';
-            if (server_options.key === undefined) server_options.key = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'server-key.pem'));
-            if (server_options.cert === undefined) server_options.cert = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'server-cert.pem'));
-            if (server_options.ca === undefined) server_options.ca = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'ca-cert.pem'));
+            if (server_options.key === undefined) server_options.key = _fs2.default.readFileSync(_path2.default.resolve(__dirname, 'server-key.pem'));
+            if (server_options.cert === undefined) server_options.cert = _fs2.default.readFileSync(_path2.default.resolve(__dirname, 'server-cert.pem'));
+            if (server_options.ca === undefined) server_options.ca = _fs2.default.readFileSync(_path2.default.resolve(__dirname, 'ca-cert.pem'));
             listener = container.listen(server_options);
-            listener.on('listening', function() {
-                var client = client_conf.container || rhea.create_container();
+            listener.on('listening', function () {
+                var client = client_conf.container || _container.containerjs.create_container();
                 var client_options = client_conf.options || {};
                 client_options.port = listener.address().port;
                 if (client_options.transport === undefined) client_options.transport = 'tls';
-                if (client_options.key === undefined) client_options.key = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'client-key.pem'));
-                if (client_options.cert === undefined) client_options.cert = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'client-cert.pem'));
-                if (client_options.ca === undefined) client_options.ca = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'ca-cert.pem'));
+                if (client_options.key === undefined) client_options.key = _fs2.default.readFileSync(_path2.default.resolve(__dirname, 'client-key.pem'));
+                if (client_options.cert === undefined) client_options.cert = _fs2.default.readFileSync(_path2.default.resolve(__dirname, 'client-cert.pem'));
+                if (client_options.ca === undefined) client_options.ca = _fs2.default.readFileSync(_path2.default.resolve(__dirname, 'ca-cert.pem'));
 
                 var conn = client.connect(client_options);
-                conn.on('connection_open', function(context) {
+                conn.on('connection_open', function (context) {
                     if (client_conf.verification) client_conf.verification(context);
                     context.connection.close();
                     done();
                 });
-                conn.on('connection_error', function(context) {
-                    ext_assert_assert.ok(false, 'Error: ' + JSON.stringify(context.connection.get_error()));
+                conn.on('connection_error', function (context) {
+                    _assert2.default.ok(false, 'Error: ' + JSON.stringify(context.connection.get_error()));
                     done();
                 });
-                conn.on('disconnected', function(context) {
-                    ext_assert_assert.ok(false, 'disconnected: ' + JSON.stringify(context.connection.get_error()));
+                conn.on('disconnected', function (context) {
+                    _assert2.default.ok(false, 'disconnected: ' + JSON.stringify(context.connection.get_error()));
                     done();
                 });
             });
@@ -70,43 +83,30 @@ describe('ssl', function() {
     }
 
     function get_container_for_sasl_plain() {
-        var container = rhea.create_container();
-        container.sasl_server_mechanisms.enable_plain(
-            function(username, password) {
-                return username.split("").reverse().join("") === password;
-            }
-        );
+        var container = _container.containerjs.create_container();
+        container.sasl_server_mechanisms.enable_plain(function (username, password) {
+            return username.split("").reverse().join("") === password;
+        });
         return container;
     }
 
     it('simple tls', success({}, {}));
-    it('simple ssl', success({options:{transport:'ssl'}}, {options:{transport:'ssl'}}));//test 'ssl' as simple alias for 'tls'
-    it('client auth and external',
-       success(
-           {
-               options:{enable_sasl_external:true, requestCert: true},
-               verification:function (context) {
-                   ext_assert_assert.equal(context.connection.get_peer_certificate().subject.CN, 'TestClient');
-               },
-           },
-           {
-               options:{enable_sasl_external:true}
-           }
-       )
-      );
-    it('client auth and plain',
-       success(
-           {
-               options:{enable_sasl_external:true, requestCert: true},
-               //verification:function (context) {
-               //    assert.equal(context.connection.get_peer_certificate().subject.CN, 'TestClient');
-               //},
-               container: get_container_for_sasl_plain()
-           },
-           {
-               options:{username:'bob', password:'bob'}
-           }
-       )
-      );
-
+    it('simple ssl', success({ options: { transport: 'ssl' } }, { options: { transport: 'ssl' } })); //test 'ssl' as simple alias for 'tls'
+    it('client auth and external', success({
+        options: { enable_sasl_external: true, requestCert: true },
+        verification: function verification(context) {
+            _assert2.default.equal(context.connection.get_peer_certificate().subject.CN, 'TestClient');
+        }
+    }, {
+        options: { enable_sasl_external: true }
+    }));
+    it('client auth and plain', success({
+        options: { enable_sasl_external: true, requestCert: true },
+        //verification:function (context) {
+        //    assert.equal(context.connection.get_peer_certificate().subject.CN, 'TestClient');
+        //},
+        container: get_container_for_sasl_plain()
+    }, {
+        options: { username: 'bob', password: 'bob' }
+    }));
 });
