@@ -1,3 +1,7 @@
+import ext_assert_assert from "assert";
+import { containerjs as rhea } from "../lib/container.js";
+import ext_fs_fs from "fs";
+import ext_path_path from "path";
 /*
  * Copyright 2015 Red Hat Inc.
  *
@@ -14,11 +18,6 @@
  * limitations under the License.
  */
 'use strict';
-
-var assert = require('assert');
-var rhea = require('../lib/container.js');
-var fs = require('fs');
-var path = require('path');
 
 
 describe('ssl', function() {
@@ -39,18 +38,18 @@ describe('ssl', function() {
             var server_options = server_conf.options || {};
             server_options.port = 0;
             if (server_options.transport === undefined) server_options.transport = 'tls';
-            if (server_options.key === undefined) server_options.key = fs.readFileSync(path.resolve(__dirname,'server-key.pem'));
-            if (server_options.cert === undefined) server_options.cert = fs.readFileSync(path.resolve(__dirname,'server-cert.pem'));
-            if (server_options.ca === undefined) server_options.ca = fs.readFileSync(path.resolve(__dirname,'ca-cert.pem'));
+            if (server_options.key === undefined) server_options.key = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'server-key.pem'));
+            if (server_options.cert === undefined) server_options.cert = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'server-cert.pem'));
+            if (server_options.ca === undefined) server_options.ca = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'ca-cert.pem'));
             listener = container.listen(server_options);
             listener.on('listening', function() {
                 var client = client_conf.container || rhea.create_container();
                 var client_options = client_conf.options || {};
                 client_options.port = listener.address().port;
                 if (client_options.transport === undefined) client_options.transport = 'tls';
-                if (client_options.key === undefined) client_options.key = fs.readFileSync(path.resolve(__dirname,'client-key.pem'));
-                if (client_options.cert === undefined) client_options.cert = fs.readFileSync(path.resolve(__dirname,'client-cert.pem'));
-                if (client_options.ca === undefined) client_options.ca = fs.readFileSync(path.resolve(__dirname,'ca-cert.pem'));
+                if (client_options.key === undefined) client_options.key = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'client-key.pem'));
+                if (client_options.cert === undefined) client_options.cert = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'client-cert.pem'));
+                if (client_options.ca === undefined) client_options.ca = ext_fs_fs.readFileSync(ext_path_path.resolve(__dirname,'ca-cert.pem'));
 
                 var conn = client.connect(client_options);
                 conn.on('connection_open', function(context) {
@@ -59,11 +58,11 @@ describe('ssl', function() {
                     done();
                 });
                 conn.on('connection_error', function(context) {
-                    assert.ok(false, 'Error: ' + JSON.stringify(context.connection.get_error()));
+                    ext_assert_assert.ok(false, 'Error: ' + JSON.stringify(context.connection.get_error()));
                     done();
                 });
                 conn.on('disconnected', function(context) {
-                    assert.ok(false, 'disconnected: ' + JSON.stringify(context.connection.get_error()));
+                    ext_assert_assert.ok(false, 'disconnected: ' + JSON.stringify(context.connection.get_error()));
                     done();
                 });
             });
@@ -87,7 +86,7 @@ describe('ssl', function() {
            {
                options:{enable_sasl_external:true, requestCert: true},
                verification:function (context) {
-                   assert.equal(context.connection.get_peer_certificate().subject.CN, 'TestClient');
+                   ext_assert_assert.equal(context.connection.get_peer_certificate().subject.CN, 'TestClient');
                },
            },
            {

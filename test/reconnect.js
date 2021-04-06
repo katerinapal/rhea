@@ -1,3 +1,5 @@
+import ext_assert_assert from "assert";
+import { containerjs as rhea } from "../lib/container.js";
 /*
  * Copyright 2015 Red Hat Inc.
  *
@@ -14,9 +16,6 @@
  * limitations under the License.
  */
 'use strict';
-
-var assert = require('assert');
-var rhea = require('../lib/container.js');
 
 describe('reconnect', function() {
     this.slow(150);
@@ -58,11 +57,11 @@ describe('reconnect', function() {
         });
         c.on('connection_open', function (context) {
             count++;
-            assert.equal(context.connection.remote.open.hostname, 'test' + count);
+            ext_assert_assert.equal(context.connection.remote.open.hostname, 'test' + count);
             if (count === 1) {
                 socket.end();
             } else {
-                assert.equal(disconnects, 1);
+                ext_assert_assert.equal(disconnects, 1);
                 context.connection.close();
                 done();
             }
@@ -79,11 +78,11 @@ describe('reconnect', function() {
         });
         c.on('sender_open', function (context) {
             count++;
-            assert.equal(context.connection.remote.open.hostname, 'test' + count);
+            ext_assert_assert.equal(context.connection.remote.open.hostname, 'test' + count);
             if (count === 1) {
                 socket.end();
             } else {
-                assert.equal(disconnects, 1);
+                ext_assert_assert.equal(disconnects, 1);
                 context.connection.close();
                 done();
             }

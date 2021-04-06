@@ -1,3 +1,5 @@
+import ext_assert_assert from "assert";
+import { containerjs as rhea } from "../lib/container.js";
 /*
  * Copyright 2015 Red Hat Inc.
  *
@@ -14,9 +16,6 @@
  * limitations under the License.
  */
 'use strict';
-
-var assert = require('assert');
-var rhea = require('../lib/container.js');
 
 describe('sasl plain', function() {
     this.slow(200);
@@ -46,7 +45,7 @@ describe('sasl plain', function() {
     it('handles authentication failure', function(done) {
         container.connect({username:'whatsit',password:'anyoldrubbish',port:listener.address().port}).on('connection_error', function(context) { 
             var error = context.connection.get_error();
-            assert.equal(error.condition, 'amqp:unauthorized-access');
+            ext_assert_assert.equal(error.condition, 'amqp:unauthorized-access');
             done();
         });
     });
@@ -79,7 +78,7 @@ describe('sasl init hostname', function() {
     it('uses host by default', function(done) {
         container.connect({username:'a',password:'a', host:'localhost', port:listener.address().port}).on('connection_open', function(context) {
             context.connection.close();
-            assert.equal(hostname, 'localhost');
+            ext_assert_assert.equal(hostname, 'localhost');
             done();
         });
     });
@@ -87,7 +86,7 @@ describe('sasl init hostname', function() {
     it('prefers servername to host', function(done) {
         container.connect({username:'a',password:'b', servername:'somethingelse', host:'localhost', port:listener.address().port}).on('connection_open', function(context) {
             context.connection.close();
-            assert.equal(hostname, 'somethingelse');
+            ext_assert_assert.equal(hostname, 'somethingelse');
             done();
         });
     });
@@ -95,7 +94,7 @@ describe('sasl init hostname', function() {
     it('prefers sasl_init_hostname to servername or host', function(done) {
         container.connect({username:'a',password:'b', sasl_init_hostname:'yetanother', servername:'somethingelse', host:'localhost', port:listener.address().port}).on('connection_open', function(context) {
             context.connection.close();
-            assert.equal(hostname, 'yetanother');
+            ext_assert_assert.equal(hostname, 'yetanother');
             done();
         });
     });
@@ -127,8 +126,8 @@ describe('sasl anonymous', function() {
     it('handles authentication failure', function(done) {
         container.connect({username:'whatsit',password:'anyoldrubbish',port:listener.address().port}).on('connection_error', function(context) {
             var error = context.connection.get_error();
-            assert.equal(error.condition, 'amqp:unauthorized-access');
-            assert.equal(error.description, 'No suitable mechanism; server supports ANONYMOUS');
+            ext_assert_assert.equal(error.condition, 'amqp:unauthorized-access');
+            ext_assert_assert.equal(error.description, 'No suitable mechanism; server supports ANONYMOUS');
             done();
         });
     });

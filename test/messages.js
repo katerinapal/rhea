@@ -1,3 +1,8 @@
+import ext_assert_assert from "assert";
+import { containerjs as rhea } from "../lib/container.js";
+import { types as amqp_types } from "../lib/types.js";
+import { message as amqp_message } from "../lib/message.js";
+import { uuid4 as utiljs_uuid4, uuid_to_string as utiljs_uuid_to_string } from "../lib/util.js";
 /*
  * Copyright 2015 Red Hat Inc.
  *
@@ -14,12 +19,6 @@
  * limitations under the License.
  */
 'use strict';
-
-var assert = require('assert');
-var rhea = require('../lib/container.js');
-var amqp_types = require('../lib/types.js');
-var amqp_message = require('../lib/message.js');
-var rhea_util = require('../lib/util.js');
 
 describe('message content', function() {
     var container, sender, listener;
@@ -49,87 +48,87 @@ describe('message content', function() {
     });
 
     it('sends and receives string body', transfer_test({body:'hello world!'}, function(message) {
-        assert.equal(message.body, 'hello world!');
+        ext_assert_assert.equal(message.body, 'hello world!');
     }));
     it('sends and receives binary body', transfer_test({body:amqp_types.wrap_binary(new Buffer('hello world!'))}, function(message) {
-        assert.equal(message.body.toString(), 'hello world!');
+        ext_assert_assert.equal(message.body.toString(), 'hello world!');
     }));
     it('sends and receives body as data section', transfer_test({body:amqp_message.data_section(new Buffer('hello world!'))}, function(message) {
-        assert.equal(message.body.typecode, 0x75);
-        assert.equal(message.body.content.toString(), 'hello world!');
+        ext_assert_assert.equal(message.body.typecode, 0x75);
+        ext_assert_assert.equal(message.body.content.toString(), 'hello world!');
     }));
     it('sends and receives body as sequence section', transfer_test({body:amqp_message.sequence_section(['hello', 1, 'world!'])}, function(message) {
-        assert.equal(message.body.typecode, 0x76);
-        assert.equal(message.body.content[0], 'hello');
-        assert.equal(message.body.content[1], 1);
-        assert.equal(message.body.content[2], 'world!');
+        ext_assert_assert.equal(message.body.typecode, 0x76);
+        ext_assert_assert.equal(message.body.content[0], 'hello');
+        ext_assert_assert.equal(message.body.content[1], 1);
+        ext_assert_assert.equal(message.body.content[2], 'world!');
     }));
     it('sends and receives subject', transfer_test({subject:'my-subject'}, function(message) {
-        assert.equal(message.subject, 'my-subject');
+        ext_assert_assert.equal(message.subject, 'my-subject');
     }));
     it('sends and receives message-id', transfer_test({message_id:'my-id'}, function(message) {
-        assert.equal(message.message_id, 'my-id');
+        ext_assert_assert.equal(message.message_id, 'my-id');
     }));
     it('sends and receives string property', transfer_test({application_properties:{colour:'red'}}, function(message) {
-        assert.equal(message.application_properties.colour, 'red');
+        ext_assert_assert.equal(message.application_properties.colour, 'red');
     }));
     it('sends and receives int property', transfer_test({application_properties:{age:101}}, function(message) {
-        assert.equal(message.application_properties.age, 101);
+        ext_assert_assert.equal(message.application_properties.age, 101);
     }));
     it('sends and receives float property', transfer_test({application_properties:{pi:3.14}}, function(message) {
-        assert.equal(message.application_properties.pi, 3.14);
+        ext_assert_assert.equal(message.application_properties.pi, 3.14);
     }));
     it('sends and receives long property', transfer_test({application_properties:{big:1467407965596}}, function(message) {
-        assert.equal(message.application_properties.big, 1467407965596);
+        ext_assert_assert.equal(message.application_properties.big, 1467407965596);
     }));
     it('sends and receives ulong property', transfer_test({application_properties:{bigneg:-1234567898765}}, function(message) {
-        assert.equal(message.application_properties.bigneg, -1234567898765);
+        ext_assert_assert.equal(message.application_properties.bigneg, -1234567898765);
     }));
     it('sends and receives char property', transfer_test({application_properties:{'x':amqp_types.wrap_char(0x2603)}}, function(message) {
-        assert.equal(message.application_properties.x, 0x2603);
+        ext_assert_assert.equal(message.application_properties.x, 0x2603);
     }));
-    var test_uuid = rhea_util.uuid4();
+    var test_uuid = utiljs_uuid4();
     it('sends and receives a uuid property', transfer_test({application_properties:{'x':amqp_types.wrap_uuid(test_uuid)}}, function(message) {
-        assert.equal(rhea_util.uuid_to_string(message.application_properties.x), rhea_util.uuid_to_string(test_uuid));
+        ext_assert_assert.equal(utiljs_uuid_to_string(message.application_properties.x), utiljs_uuid_to_string(test_uuid));
     }));
     it('sends and receives string message annotation', transfer_test({message_annotations:{colour:'blue'}}, function(message) {
-        assert.equal(message.message_annotations.colour, 'blue');
+        ext_assert_assert.equal(message.message_annotations.colour, 'blue');
     }));
     it('sends and receives int delivery annotation', transfer_test({delivery_annotations:{count:8765}}, function(message) {
-        assert.equal(message.delivery_annotations.count, 8765);
+        ext_assert_assert.equal(message.delivery_annotations.count, 8765);
     }));
     it('sends and receives body of 1k', transfer_test({body:new Array(1024+1).join('x')}, function(message) {
-        assert.equal(message.body, new Array(1024+1).join('x'));
+        ext_assert_assert.equal(message.body, new Array(1024+1).join('x'));
     }));
     it('sends and receives body of 5k', transfer_test({body:new Array(1024*5+1).join('y')}, function(message) {
-        assert.equal(message.body, new Array(1024*5+1).join('y'));
+        ext_assert_assert.equal(message.body, new Array(1024*5+1).join('y'));
     }));
     it('sends and receives body of 50k', transfer_test({body:new Array(1024*50+1).join('z')}, function(message) {
-        assert.equal(message.body, new Array(1024*50+1).join('z'));
+        ext_assert_assert.equal(message.body, new Array(1024*50+1).join('z'));
     }));
     it('sends and receives map body', transfer_test({body:{colour:'green',age:8,happy:true, sad:false}}, function(message) {
-        assert.equal(message.body.colour, 'green');
-        assert.equal(message.body.age, 8);
-        assert.equal(message.body.happy, true);
-        assert.equal(message.body.sad, false);
-        assert.equal(message.body.indifferent, undefined);
+        ext_assert_assert.equal(message.body.colour, 'green');
+        ext_assert_assert.equal(message.body.age, 8);
+        ext_assert_assert.equal(message.body.happy, true);
+        ext_assert_assert.equal(message.body.sad, false);
+        ext_assert_assert.equal(message.body.indifferent, undefined);
     }));
     it('sends and receives map with doubles', transfer_test({body:{west:amqp_types.wrap_double(4.734), north:amqp_types.wrap_double(56.0023),
                                                                      }}, function(message) {
 
-        assert.equal(message.body.north, 56.0023);
-        assert.equal(message.body.west, 4.734);
+        ext_assert_assert.equal(message.body.north, 56.0023);
+        ext_assert_assert.equal(message.body.west, 4.734);
     }));
     it('sends and receives map with floats', transfer_test({body:{half:amqp_types.wrap_float(0.5), quarter:amqp_types.wrap_double(0.25),
                                                                      }}, function(message) {
 
-        assert.equal(message.body.half, 0.5);
-        assert.equal(message.body.quarter, 0.25);
+        ext_assert_assert.equal(message.body.half, 0.5);
+        ext_assert_assert.equal(message.body.quarter, 0.25);
     }));
     it('sends and receives map with ulongs', transfer_test({body:{age:amqp_types.wrap_ulong(888), max:amqp_types.wrap_ulong(9007199254740992),
                                                                      }}, function(message) {
-        assert.equal(message.body.max, 9007199254740992);
-        assert.equal(message.body.age, 888);
+        ext_assert_assert.equal(message.body.max, 9007199254740992);
+        ext_assert_assert.equal(message.body.age, 888);
     }));
     it('sends and receives map with longs', transfer_test({body:{one:amqp_types.wrap_long(1),
                                                                      negative_one:amqp_types.wrap_long(-1),
@@ -141,29 +140,29 @@ describe('message content', function() {
                                                                      max:amqp_types.wrap_long(9007199254740992),
                                                                      min:amqp_types.wrap_long(-9007199254740992)
                                                                     }}, function(message) {
-        assert.equal(message.body.one, 1);
-        assert.equal(message.body.negative_one, -1);
-        assert.equal(message.body.positive, 1000);
-        assert.equal(message.body.negative, -1000);
-        assert.equal(message.body.large, 1000000000);
-        assert.equal(message.body.large_negative, -1000000000);
-        assert.equal(message.body.awkward, 1467407965596);
-        assert.equal(message.body.max, 9007199254740992);
-        assert.equal(message.body.min, -9007199254740992);
+        ext_assert_assert.equal(message.body.one, 1);
+        ext_assert_assert.equal(message.body.negative_one, -1);
+        ext_assert_assert.equal(message.body.positive, 1000);
+        ext_assert_assert.equal(message.body.negative, -1000);
+        ext_assert_assert.equal(message.body.large, 1000000000);
+        ext_assert_assert.equal(message.body.large_negative, -1000000000);
+        ext_assert_assert.equal(message.body.awkward, 1467407965596);
+        ext_assert_assert.equal(message.body.max, 9007199254740992);
+        ext_assert_assert.equal(message.body.min, -9007199254740992);
     }));
     it('sends and receives map with ulongs/longs as buffers', transfer_test({body:{too_big:new amqp_types.Ulong(new Buffer([0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF])),
                                                                                    too_small:new amqp_types.Long(new Buffer([0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00]))
                                                                      }}, function(message) {
-        assert.equal(message.body.too_big.length, 8);
+        ext_assert_assert.equal(message.body.too_big.length, 8);
         for (var i = 0; i < 8; i++) {
-            assert.equal(message.body.too_big[i], 0xFF);
+            ext_assert_assert.equal(message.body.too_big[i], 0xFF);
         }
-        assert.equal(message.body.too_small.length, 8);
+        ext_assert_assert.equal(message.body.too_small.length, 8);
         for (var i = 0; i < 8; i++) {
             if (i === 0) {
-                assert.equal(message.body.too_small[i], 0xFF);
+                ext_assert_assert.equal(message.body.too_small[i], 0xFF);
             } else {
-                assert.equal(message.body.too_small[i], 0x00);
+                ext_assert_assert.equal(message.body.too_small[i], 0x00);
             }
         }
 
@@ -188,24 +187,24 @@ describe('message content', function() {
         first_acquirer:false,
         delivery_count:8
     }, function(message) {
-        assert.equal(message.message_id, 'my-id');
-        assert.equal(message.user_id, 'my-user');
-        assert.equal(message.to, 'my-to');
-        assert.equal(message.subject, 'my-subject');
-        assert.equal(message.reply_to, 'my-reply-to');
-        assert.equal(message.correlation_id, 'correlate-me');
-        assert.equal(message.content_type, 'text');
-        assert.equal(message.content_encoding, 'ascii');
-        assert.equal(message.absolute_expiry_time, 123456789);
-        assert.equal(message.creation_time, 987654321);
-        assert.equal(message.group_id, 'my-group');
-        assert.equal(message.group_sequence, 77);
-        assert.equal(message.reply_to_group_id, 'still-my-group');
-        assert.equal(message.durable, true);
-        assert.equal(message.priority, 3);
-        assert.equal(message.ttl, 123456789);
-        assert.equal(message.first_acquirer, false);
-        assert.equal(message.delivery_count, 8);
+        ext_assert_assert.equal(message.message_id, 'my-id');
+        ext_assert_assert.equal(message.user_id, 'my-user');
+        ext_assert_assert.equal(message.to, 'my-to');
+        ext_assert_assert.equal(message.subject, 'my-subject');
+        ext_assert_assert.equal(message.reply_to, 'my-reply-to');
+        ext_assert_assert.equal(message.correlation_id, 'correlate-me');
+        ext_assert_assert.equal(message.content_type, 'text');
+        ext_assert_assert.equal(message.content_encoding, 'ascii');
+        ext_assert_assert.equal(message.absolute_expiry_time, 123456789);
+        ext_assert_assert.equal(message.creation_time, 987654321);
+        ext_assert_assert.equal(message.group_id, 'my-group');
+        ext_assert_assert.equal(message.group_sequence, 77);
+        ext_assert_assert.equal(message.reply_to_group_id, 'still-my-group');
+        ext_assert_assert.equal(message.durable, true);
+        ext_assert_assert.equal(message.priority, 3);
+        ext_assert_assert.equal(message.ttl, 123456789);
+        ext_assert_assert.equal(message.first_acquirer, false);
+        ext_assert_assert.equal(message.delivery_count, 8);
     }));
     it('set header and properties directly', transfer_test({
         message_id:'my-id',
@@ -227,48 +226,48 @@ describe('message content', function() {
         first_acquirer:false,
         delivery_count:8
     }, function(message) {
-        assert.equal(message.message_id, 'my-id');
-        assert.equal(message.user_id, 'my-user');
-        assert.equal(message.to, 'my-to');
-        assert.equal(message.subject, 'my-subject');
-        assert.equal(message.reply_to, 'my-reply-to');
-        assert.equal(message.correlation_id, 'correlate-me');
-        assert.equal(message.content_type, 'text');
-        assert.equal(message.content_encoding, 'ascii');
-        assert.equal(message.absolute_expiry_time, 123456789);
-        assert.equal(message.creation_time, 987654321);
-        assert.equal(message.group_id, 'my-group');
-        assert.equal(message.group_sequence, 77);
-        assert.equal(message.reply_to_group_id, 'still-my-group');
-        assert.equal(message.durable, true);
-        assert.equal(message.priority, 3);
-        assert.equal(message.ttl, 123456789);
-        assert.equal(message.first_acquirer, false);
-        assert.equal(message.delivery_count, 8);
+        ext_assert_assert.equal(message.message_id, 'my-id');
+        ext_assert_assert.equal(message.user_id, 'my-user');
+        ext_assert_assert.equal(message.to, 'my-to');
+        ext_assert_assert.equal(message.subject, 'my-subject');
+        ext_assert_assert.equal(message.reply_to, 'my-reply-to');
+        ext_assert_assert.equal(message.correlation_id, 'correlate-me');
+        ext_assert_assert.equal(message.content_type, 'text');
+        ext_assert_assert.equal(message.content_encoding, 'ascii');
+        ext_assert_assert.equal(message.absolute_expiry_time, 123456789);
+        ext_assert_assert.equal(message.creation_time, 987654321);
+        ext_assert_assert.equal(message.group_id, 'my-group');
+        ext_assert_assert.equal(message.group_sequence, 77);
+        ext_assert_assert.equal(message.reply_to_group_id, 'still-my-group');
+        ext_assert_assert.equal(message.durable, true);
+        ext_assert_assert.equal(message.priority, 3);
+        ext_assert_assert.equal(message.ttl, 123456789);
+        ext_assert_assert.equal(message.first_acquirer, false);
+        ext_assert_assert.equal(message.delivery_count, 8);
     }));
     it('test undefined properties and headers directly', transfer_test({body:'hello world!'}, function(message) {
-        assert.equal(message.body, 'hello world!');
-        assert.equal(message.message_id, undefined);
-        assert.equal(message.user_id, undefined);
-        assert.equal(message.to, undefined);
-        assert.equal(message.subject, undefined);
-        assert.equal(message.reply_to, undefined);
-        assert.equal(message.correlation_id, undefined);
-        assert.equal(message.content_type, undefined);
-        assert.equal(message.content_encoding, undefined);
-        assert.equal(message.absolute_expiry_time, undefined);
-        assert.equal(message.creation_time, undefined);
-        assert.equal(message.group_id, undefined);
-        assert.equal(message.group_sequence, undefined);
-        assert.equal(message.reply_to_group_id, undefined);
-        assert.equal(message.durable, undefined);
-        assert.equal(message.priority, undefined);
-        assert.equal(message.ttl, undefined);
-        assert.equal(message.first_acquirer, undefined);
-        assert.equal(message.delivery_count, undefined);
+        ext_assert_assert.equal(message.body, 'hello world!');
+        ext_assert_assert.equal(message.message_id, undefined);
+        ext_assert_assert.equal(message.user_id, undefined);
+        ext_assert_assert.equal(message.to, undefined);
+        ext_assert_assert.equal(message.subject, undefined);
+        ext_assert_assert.equal(message.reply_to, undefined);
+        ext_assert_assert.equal(message.correlation_id, undefined);
+        ext_assert_assert.equal(message.content_type, undefined);
+        ext_assert_assert.equal(message.content_encoding, undefined);
+        ext_assert_assert.equal(message.absolute_expiry_time, undefined);
+        ext_assert_assert.equal(message.creation_time, undefined);
+        ext_assert_assert.equal(message.group_id, undefined);
+        ext_assert_assert.equal(message.group_sequence, undefined);
+        ext_assert_assert.equal(message.reply_to_group_id, undefined);
+        ext_assert_assert.equal(message.durable, undefined);
+        ext_assert_assert.equal(message.priority, undefined);
+        ext_assert_assert.equal(message.ttl, undefined);
+        ext_assert_assert.equal(message.first_acquirer, undefined);
+        ext_assert_assert.equal(message.delivery_count, undefined);
     }));
     it('message has a toString', transfer_test({message_id:'my-id', body:'hello world!'}, function(message) {
-        assert.equal(message.toString(), '{"message_id":"my-id","body":"hello world!"}');
+        ext_assert_assert.equal(message.toString(), '{"message_id":"my-id","body":"hello world!"}');
     }));
 });
 
@@ -311,10 +310,10 @@ describe('acknowledgement', function() {
             context.sender.send({body:'accept-me'});
         });
         client.on('message', function(context) {
-            assert.equal(context.message.body, 'accept-me');
+            ext_assert_assert.equal(context.message.body, 'accept-me');
         });
         client.on('connection_close', function (context) {
-            assert.equal(outcome.state, 'accepted');
+            ext_assert_assert.equal(outcome.state, 'accepted');
             done();
         });
         client.connect(listener.address()).attach_receiver();
@@ -324,11 +323,11 @@ describe('acknowledgement', function() {
             context.sender.send({body:'accept-me'});
         });
         client.on('message', function(context) {
-            assert.equal(context.message.body, 'accept-me');
+            ext_assert_assert.equal(context.message.body, 'accept-me');
             context.delivery.accept();
         });
         client.on('connection_close', function (context) {
-            assert.equal(outcome.state, 'accepted');
+            ext_assert_assert.equal(outcome.state, 'accepted');
             done();
         });
         client.connect(listener.address()).attach_receiver({autoaccept: false});
@@ -338,13 +337,13 @@ describe('acknowledgement', function() {
             context.sender.send({body:'release-me'});
         });
         client.on('message', function(context) {
-            assert.equal(context.message.body, 'release-me');
+            ext_assert_assert.equal(context.message.body, 'release-me');
             context.delivery.release();
         });
         client.on('connection_close', function (context) {
-            assert.equal(outcome.state, 'released');
-            assert.equal(outcome.delivery_failed, undefined);
-            assert.equal(outcome.undeliverable_here, undefined);
+            ext_assert_assert.equal(outcome.state, 'released');
+            ext_assert_assert.equal(outcome.delivery_failed, undefined);
+            ext_assert_assert.equal(outcome.undeliverable_here, undefined);
             done();
         });
         client.connect(listener.address()).attach_receiver({autoaccept: false});
@@ -354,13 +353,13 @@ describe('acknowledgement', function() {
             context.sender.send({body:'reject-me'});
         });
         client.on('message', function(context) {
-            assert.equal(context.message.body, 'reject-me');
+            ext_assert_assert.equal(context.message.body, 'reject-me');
             context.delivery.reject({condition:'rhea:oops:string',description:'something bad occurred'});
         });
         client.on('connection_close', function (context) {
-            assert.equal(outcome.state, 'rejected');
-            assert.equal(outcome.error.condition, 'rhea:oops:string');
-            assert.equal(outcome.modified, undefined);
+            ext_assert_assert.equal(outcome.state, 'rejected');
+            ext_assert_assert.equal(outcome.error.condition, 'rhea:oops:string');
+            ext_assert_assert.equal(outcome.modified, undefined);
             done();
         });
         client.connect(listener.address()).attach_receiver({autoaccept: false});
@@ -368,7 +367,7 @@ describe('acknowledgement', function() {
     it('explicit modify', function(done) {
         server.options.treat_modified_as_released = false;
         server.on('modified', function (context) {
-            assert.equal(outcome.state, undefined);
+            ext_assert_assert.equal(outcome.state, undefined);
             outcome.state = 'modified';
             outcome.delivery_failed = context.delivery.remote_state.delivery_failed;
             outcome.undeliverable_here = context.delivery.remote_state.undeliverable_here;
@@ -377,13 +376,13 @@ describe('acknowledgement', function() {
             context.sender.send({body:'modify-me'});
         });
         client.on('message', function(context) {
-            assert.equal(context.message.body, 'modify-me');
+            ext_assert_assert.equal(context.message.body, 'modify-me');
             context.delivery.modified({delivery_failed:true, undeliverable_here: true});
         });
         client.on('connection_close', function (context) {
-            assert.equal(outcome.state, 'modified');
-            assert.equal(outcome.delivery_failed, true);
-            assert.equal(outcome.undeliverable_here, true);
+            ext_assert_assert.equal(outcome.state, 'modified');
+            ext_assert_assert.equal(outcome.delivery_failed, true);
+            ext_assert_assert.equal(outcome.undeliverable_here, true);
             done();
         });
         client.connect(listener.address()).attach_receiver({autoaccept: false});
@@ -393,13 +392,13 @@ describe('acknowledgement', function() {
             context.sender.send({body:'try-again'});
         });
         client.on('message', function(context) {
-            assert.equal(context.message.body, 'try-again');
+            ext_assert_assert.equal(context.message.body, 'try-again');
             context.delivery.release({delivery_failed:true, undeliverable_here: true});
         });
         client.on('connection_close', function (context) {
-            assert.equal(outcome.state, 'released');
-            assert.equal(outcome.delivery_failed, true);
-            assert.equal(outcome.undeliverable_here, true);
+            ext_assert_assert.equal(outcome.state, 'released');
+            ext_assert_assert.equal(outcome.delivery_failed, true);
+            ext_assert_assert.equal(outcome.undeliverable_here, true);
             done();
         });
         client.connect(listener.address()).attach_receiver({autoaccept: false});
@@ -432,8 +431,8 @@ describe('fragmentation', function() {
         var n = count || 1;
         return function(done) {
             container.on('message', function(context) {
-                assert.equal(context.message.body.length, size);
-                assert.equal(context.message.body.toString(), message.body.toString());
+                ext_assert_assert.equal(context.message.body.length, size);
+                ext_assert_assert.equal(context.message.body.toString(), message.body.toString());
                 if (++received === n) {
                     done();
                 }

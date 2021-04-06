@@ -1,3 +1,5 @@
+import ext_assert_assert from "assert";
+import { containerjs as rhea } from "../lib/container.js";
 /*
  * Copyright 2015 Red Hat Inc.
  *
@@ -14,9 +16,6 @@
  * limitations under the License.
  */
 'use strict';
-
-var assert = require('assert');
-var rhea = require('../lib/container.js');
 
 function create_broker() {
     return {
@@ -98,8 +97,8 @@ describe('rpc', function() {
         var client = rhea.rpc_client(url);
         client.define('reverse');
         client.reverse('hello', function(result, error) {
-            assert.equal(result, 'olleh');
-            assert.equal(error, undefined);
+            ext_assert_assert.equal(result, 'olleh');
+            ext_assert_assert.equal(error, undefined);
             client.close();
             server.close();
             done();
@@ -111,8 +110,8 @@ describe('rpc', function() {
         var client = rhea.rpc_client(url);
         client.define('reverse');
         client.reverse('hello', function(result, error) {
-            assert.equal(result, undefined);
-            assert.equal(error.name, 'bad-method');
+            ext_assert_assert.equal(result, undefined);
+            ext_assert_assert.equal(error.name, 'bad-method');
             client.close();
             done();
         });
@@ -126,16 +125,16 @@ describe('rpc', function() {
         client.define('foo');
         client.define('bar');
         client.foo('hello', function(result, error) {
-            assert.equal(result, undefined);
-            assert.equal(error.name, 'bad-mood');
-            assert.equal(error.description, 'I dont like the cut of your jib');
+            ext_assert_assert.equal(result, undefined);
+            ext_assert_assert.equal(error.name, 'bad-mood');
+            ext_assert_assert.equal(error.description, 'I dont like the cut of your jib');
             client.close();
             done();
         });
         client.bar('hello', function(result, error) {
-            assert.equal(result, undefined);
-            assert.equal(error.name, 'error');
-            assert.equal(error.description, 'no joy');
+            ext_assert_assert.equal(result, undefined);
+            ext_assert_assert.equal(error.name, 'error');
+            ext_assert_assert.equal(error.description, 'no joy');
             client.close();
             done();
         });
@@ -149,15 +148,15 @@ describe('rpc', function() {
         client.define('reverse');
         client.define('upper');
         client.reverse('hello', function(result, error) {
-            assert.equal(result, 'olleh');
-            assert.equal(error, undefined);
+            ext_assert_assert.equal(result, 'olleh');
+            ext_assert_assert.equal(error, undefined);
             client.upper('shout', function(result, error) {
-                assert.equal(result, 'SHOUT');
-                assert.equal(error, undefined);
+                ext_assert_assert.equal(result, 'SHOUT');
+                ext_assert_assert.equal(error, undefined);
             });
             client.reverse('goodbye', function(result, error) {
-                assert.equal(result, 'eybdoog');
-                assert.equal(error, undefined);
+                ext_assert_assert.equal(result, 'eybdoog');
+                ext_assert_assert.equal(error, undefined);
                 client.close();
                 server.close();
                 done();
@@ -171,8 +170,8 @@ describe('rpc', function() {
         var client = rhea.rpc_client(url);
         client.define('reverse');
         client.reverse('hello', function(result, error) {
-            assert.equal(result, 'olleh');
-            assert.equal(error, undefined);
+            ext_assert_assert.equal(result, 'olleh');
+            ext_assert_assert.equal(error, undefined);
             client.close();
             server.close();
             done();
@@ -206,8 +205,8 @@ describe('rpc with anonymous-relay offered as single symbol', function() {
         var client = rhea.rpc_client(url);
         client.define('reverse');
         client.reverse('hello', function(result, error) {
-            assert.equal(result, 'olleh');
-            assert.equal(error, undefined);
+            ext_assert_assert.equal(result, 'olleh');
+            ext_assert_assert.equal(error, undefined);
             client.close();
             server.close();
             done();
@@ -241,8 +240,8 @@ describe('rpc without anonymous-relay', function() {
         var client = rhea.rpc_client(url);
         client.define('reverse');
         client.reverse('hello', function(result, error) {
-            assert.equal(result, 'olleh');
-            assert.equal(error, undefined);
+            ext_assert_assert.equal(result, 'olleh');
+            ext_assert_assert.equal(error, undefined);
             client.close();
             server.close();
             done();
@@ -256,11 +255,11 @@ describe('rpc without anonymous-relay', function() {
             var client = rhea.rpc_client(url);
             client.define('reverse');
             client.reverse('hello', function(result, error) {
-                assert.equal(result, 'olleh');
-                assert.equal(error, undefined);
+                ext_assert_assert.equal(result, 'olleh');
+                ext_assert_assert.equal(error, undefined);
                 client.reverse('goodbye', function(result, error) {
-                    assert.equal(result, 'eybdoog');
-                    assert.equal(error, undefined);
+                    ext_assert_assert.equal(result, 'eybdoog');
+                    ext_assert_assert.equal(error, undefined);
                     if (i === 0) {
                         setTimeout(function () {
                             client.close();

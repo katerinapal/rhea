@@ -1,5 +1,5 @@
 {
-    "name" : "rhea",
+    "name": "rhea",
     "version": "0.2.9",
     "description": "reactive AMQP 1.0 library",
     "homepage": "http://github.com/grs/rhea",
@@ -12,12 +12,19 @@
         "debug": ">=0.8.0"
     },
     "devDependencies": {
-        "eslint":"",
-        "mocha":"^3.0.0",
-        "browserify":"",
+        "eslint": "",
+        "mocha": "^3.0.0",
+        "browserify": "",
         "istanbul": "",
-        "minimist":"",
-        "uglify-js":""
+        "minimist": "",
+        "uglify-js": "",
+        "babel-cli": "latest",
+        "babel-core": "latest",
+        "babel-plugin-add-module-exports": "latest",
+        "babel-plugin-transform-es2015-modules-commonjs": "latest",
+        "babel-polyfill": "latest",
+        "babel-plugin-transform-object-rest-spread": "latest",
+        "babel-preset-env": "latest"
     },
     "scripts": {
         "lint": "eslint lib/*.js",
@@ -25,8 +32,15 @@
         "coverage": "istanbul cover _mocha",
         "browserify": "browserify -r .:rhea -o dist/rhea.js",
         "run-examples": "mocha examples/test_examples.js",
-        "uglify": "uglifyjs --source-map --output dist/rhea.min.js dist/rhea.js"
+        "uglify": "uglifyjs --source-map --output dist/rhea.min.js dist/rhea.js",
+        "compile-lib": "babel lib --out-dir lib --require babel-polyfill --presets env",
+        "compile-test": "babel test --out-dir test --require babel-polyfill --presets env",
+        "compile-1_script": "npm run compile-lib && npm run compile-test",
+        "compile": "npm run compile-1_script"
     },
-    "keywords": ["amqp","messaging"],
-    "main" : "./lib/container.js"
+    "keywords": [
+        "amqp",
+        "messaging"
+    ],
+    "main": "./lib/container.js"
 }

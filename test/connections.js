@@ -1,3 +1,5 @@
+import ext_assert_assert from "assert";
+import { containerjs as rhea } from "../lib/container.js";
 /*
  * Copyright 2015 Red Hat Inc.
  *
@@ -14,9 +16,6 @@
  * limitations under the License.
  */
 'use strict';
-
-var assert = require('assert');
-var rhea = require('../lib/container.js');
 
 describe('connection fields', function() {
     var container, listener;
@@ -73,71 +72,71 @@ describe('connection fields', function() {
     });
 
     it('single offered capability', open_test({offered_capabilities:'foo'}, function(connection) {
-        assert.equal(connection.remote.open.offered_capabilities, 'foo');
+        ext_assert_assert.equal(connection.remote.open.offered_capabilities, 'foo');
     }));
     it('multiple offered capabilities', open_test({offered_capabilities:['foo', 'bar']}, function(connection) {
-        assert.equal(connection.remote.open.offered_capabilities.length, 2);
-        assert.equal(connection.remote.open.offered_capabilities[0], 'foo');
-        assert.equal(connection.remote.open.offered_capabilities[1], 'bar');
+        ext_assert_assert.equal(connection.remote.open.offered_capabilities.length, 2);
+        ext_assert_assert.equal(connection.remote.open.offered_capabilities[0], 'foo');
+        ext_assert_assert.equal(connection.remote.open.offered_capabilities[1], 'bar');
     }));
     it('single desired capability', open_test({desired_capabilities:'foo'}, function(connection) {
-        assert.equal(connection.remote.open.desired_capabilities, 'foo');
+        ext_assert_assert.equal(connection.remote.open.desired_capabilities, 'foo');
     }));
     it('multiple desired capabilities', open_test({desired_capabilities:['a', 'b', 'c']}, function(connection) {
-        assert.equal(connection.remote.open.desired_capabilities.length, 3);
-        assert.equal(connection.remote.open.desired_capabilities[0], 'a');
-        assert.equal(connection.remote.open.desired_capabilities[1], 'b');
-        assert.equal(connection.remote.open.desired_capabilities[2], 'c');
+        ext_assert_assert.equal(connection.remote.open.desired_capabilities.length, 3);
+        ext_assert_assert.equal(connection.remote.open.desired_capabilities[0], 'a');
+        ext_assert_assert.equal(connection.remote.open.desired_capabilities[1], 'b');
+        ext_assert_assert.equal(connection.remote.open.desired_capabilities[2], 'c');
     }));
     it('hostname explicit', open_test({hostname:'my-virtual-host'}, function(connection) {
-        assert.equal(connection.remote.open.hostname, 'my-virtual-host');
+        ext_assert_assert.equal(connection.remote.open.hostname, 'my-virtual-host');
     }));
     it('hostname aliased', open_test({hostname:'my-virtual-host'}, function(connection) {
-        assert.equal(connection.hostname, 'my-virtual-host');
+        ext_assert_assert.equal(connection.hostname, 'my-virtual-host');
     }));
     it('container_id explicit', open_test({container_id:'this-is-me'}, function(connection) {
-        assert.equal(connection.remote.open.container_id, 'this-is-me');
+        ext_assert_assert.equal(connection.remote.open.container_id, 'this-is-me');
     }));
     it('container_id aliased', open_test({container_id:'this-is-me'}, function(connection) {
-        assert.equal(connection.container_id, 'this-is-me');
+        ext_assert_assert.equal(connection.container_id, 'this-is-me');
     }));
     it('max frame size explicit', open_test({max_frame_size:5432}, function(connection) {
-        assert.equal(connection.remote.open.max_frame_size, 5432);
+        ext_assert_assert.equal(connection.remote.open.max_frame_size, 5432);
     }));
     it('max frame size aliased', open_test({max_frame_size:5432}, function(connection) {
-        assert.equal(connection.max_frame_size, 5432);
+        ext_assert_assert.equal(connection.max_frame_size, 5432);
     }));
     it('channel max explicit', open_test({channel_max:10}, function(connection) {
-        assert.equal(connection.remote.open.channel_max, 10);
+        ext_assert_assert.equal(connection.remote.open.channel_max, 10);
     }));
     it('channel max aliased', open_test({channel_max:10}, function(connection) {
-        assert.equal(connection.channel_max, 10);
+        ext_assert_assert.equal(connection.channel_max, 10);
     }));
     it('idle time out explicit', open_test({idle_time_out:1000}, function(connection) {
-        assert.equal(connection.remote.open.idle_time_out, 1000);
+        ext_assert_assert.equal(connection.remote.open.idle_time_out, 1000);
     }));
     it('idle time out aliased', open_test({idle_time_out:1000}, function(connection) {
-        assert.equal(connection.idle_time_out, 1000);
+        ext_assert_assert.equal(connection.idle_time_out, 1000);
     }));
     it('properties explicit', open_test({properties:{flavour:'vanilla', scoops:2, cone:true}}, function(connection) {
-        assert.equal(connection.remote.open.properties.flavour, 'vanilla');
-        assert.equal(connection.remote.open.properties.scoops, 2);
-        assert.equal(connection.remote.open.properties.cone, true);
+        ext_assert_assert.equal(connection.remote.open.properties.flavour, 'vanilla');
+        ext_assert_assert.equal(connection.remote.open.properties.scoops, 2);
+        ext_assert_assert.equal(connection.remote.open.properties.cone, true);
     }));
     it('properties aliased', open_test({properties:{flavour:'vanilla', scoops:2, cone:true}}, function(connection) {
-        assert.equal(connection.properties.flavour, 'vanilla');
-        assert.equal(connection.properties.scoops, 2);
-        assert.equal(connection.properties.cone, true);
+        ext_assert_assert.equal(connection.properties.flavour, 'vanilla');
+        ext_assert_assert.equal(connection.properties.scoops, 2);
+        ext_assert_assert.equal(connection.properties.cone, true);
     }));
     it('error on close', close_test({condition:'amqp:connection:forced', description:'testing error on close'}, function(connection) {
         var error = connection.remote.close.error;
-        assert.equal(error.condition, 'amqp:connection:forced');
-        assert.equal(error.description, 'testing error on close');
+        ext_assert_assert.equal(error.condition, 'amqp:connection:forced');
+        ext_assert_assert.equal(error.description, 'testing error on close');
     }));
     it('pass error to close', close_test_simple({condition:'amqp:connection:forced', description:'testing error on close'}, function(connection) {
         var error = connection.remote.close.error;
-        assert.equal(error.condition, 'amqp:connection:forced');
-        assert.equal(error.description, 'testing error on close');
+        ext_assert_assert.equal(error.condition, 'amqp:connection:forced');
+        ext_assert_assert.equal(error.description, 'testing error on close');
     }));
 });
 describe('connection error handling', function() {
@@ -163,22 +162,22 @@ describe('connection error handling', function() {
             context.connection.close({condition:'amqp:connection:forced', description:'testing error on close'});
         });
         container.on('connection_close', function(context) {
-            assert.equal(error_handler_called, true);
-            assert.equal(close_handler_called, true);
+            ext_assert_assert.equal(error_handler_called, true);
+            ext_assert_assert.equal(close_handler_called, true);
             done();
         });
         var c = container.connect(listener.address());
         c.on('connection_error', function(context) {
             error_handler_called = true;
             var error = context.connection.error;
-            assert.equal(error.condition, 'amqp:connection:forced');
-            assert.equal(error.description, 'testing error on close');
+            ext_assert_assert.equal(error.condition, 'amqp:connection:forced');
+            ext_assert_assert.equal(error.description, 'testing error on close');
         });
         c.on('connection_close', function(context) {
             close_handler_called = true;
             var error = context.connection.error;
-            assert.equal(error.condition, 'amqp:connection:forced');
-            assert.equal(error.description, 'testing error on close');
+            ext_assert_assert.equal(error.condition, 'amqp:connection:forced');
+            ext_assert_assert.equal(error.description, 'testing error on close');
         });
     });
     it('error handled', function (done) {
@@ -187,15 +186,15 @@ describe('connection error handling', function() {
             context.connection.close({condition:'amqp:connection:forced', description:'testing error on close'});
         });
         container.on('connection_close', function(context) {
-            assert.equal(error_handler_called, true);
+            ext_assert_assert.equal(error_handler_called, true);
             done();
         });
         var c = rhea.create_container({non_fatal_errors:[]}).connect(listener.address());
         c.on('connection_error', function(context) {
             error_handler_called = true;
             var error = context.connection.error;
-            assert.equal(error.condition, 'amqp:connection:forced');
-            assert.equal(error.description, 'testing error on close');
+            ext_assert_assert.equal(error.condition, 'amqp:connection:forced');
+            ext_assert_assert.equal(error.description, 'testing error on close');
         });
     });
     it('unhandled error', function (done) {
@@ -208,8 +207,8 @@ describe('connection error handling', function() {
         });
         var container2 = rhea.create_container({non_fatal_errors:[]});
         container2.on('error', function (error) {
-            assert.equal(error.condition, 'amqp:connection:forced');
-            assert.equal(error.description, 'testing error on close');
+            ext_assert_assert.equal(error.condition, 'amqp:connection:forced');
+            ext_assert_assert.equal(error.description, 'testing error on close');
         });
         var c = container2.connect(listener.address());
     });
@@ -245,20 +244,20 @@ describe('connection events', function() {
 
         var c1 = container.connect({port: listener.address().port, desired_capabilities:'one'});
         c1.on('connection_open', function (context) {
-            assert.equal(context.connection.remote.open.offered_capabilities, 'one');
+            ext_assert_assert.equal(context.connection.remote.open.offered_capabilities, 'one');
             latch.decrement();
             context.connection.close();
         });
         var c2 = container.connect({port: listener.address().port, desired_capabilities:'two'});
         c2.on('connection_open', function (context) {
-            assert.equal(context.connection.remote.open.offered_capabilities, 'two');
+            ext_assert_assert.equal(context.connection.remote.open.offered_capabilities, 'two');
             latch.decrement();
             context.connection.close();
         });
         var c3 = container.connect({port: listener.address().port, desired_capabilities:'three'});
         //third connection has no handler defined, so will default to container level handler:
         container.on('connection_open', function(context) {
-            assert.equal(context.connection.remote.open.offered_capabilities, 'three');
+            ext_assert_assert.equal(context.connection.remote.open.offered_capabilities, 'three');
             latch.decrement();
             context.connection.close();
         });
@@ -289,8 +288,8 @@ describe('container id', function() {
 
         var c1 = container.connect(listener.address());
         c1.on('connection_open', function (context) {
-            assert.equal(context.connection.remote.open.container_id, 'my-server-container');
-            assert.equal(client_container_name, 'my-client-container');
+            ext_assert_assert.equal(context.connection.remote.open.container_id, 'my-server-container');
+            ext_assert_assert.equal(client_container_name, 'my-client-container');
             context.connection.close();
             done();
         });
@@ -324,8 +323,8 @@ describe('connection send', function() {
         var count = 0;
         c.on('accepted', function (context) {
             if (++count === 2) {
-                assert.equal(received['a'], 'A');
-                assert.equal(received['b'], 'B');
+                ext_assert_assert.equal(received['a'], 'A');
+                ext_assert_assert.equal(received['b'], 'B');
                 context.sender.close();
                 context.connection.close();
                 done();
@@ -359,12 +358,12 @@ describe('link lookup and iteration', function() {
         var s1 = conn.open_sender({name:'oof'});
         var s2 = conn.open_sender({name:'rab'});
         conn.on('connection_open', function (context) {
-            assert.equal(conn.find_receiver(function (r) { return r.name === 'foo'; }), r1);
-            assert.equal(conn.find_receiver(function (r) { return r.name === 'bar'; }), r2);
-            assert(conn.find_receiver(function (r) { return false; }) === undefined);
-            assert.equal(conn.find_sender(function (s) { return s.name === 'oof'; }), s1);
-            assert.equal(conn.find_sender(function (s) { return s.name === 'rab'; }), s2);
-            assert(conn.find_sender(function (s) { return false; }) === undefined);
+            ext_assert_assert.equal(conn.find_receiver(function (r) { return r.name === 'foo'; }), r1);
+            ext_assert_assert.equal(conn.find_receiver(function (r) { return r.name === 'bar'; }), r2);
+            ext_assert_assert(conn.find_receiver(function (r) { return false; }) === undefined);
+            ext_assert_assert.equal(conn.find_sender(function (s) { return s.name === 'oof'; }), s1);
+            ext_assert_assert.equal(conn.find_sender(function (s) { return s.name === 'rab'; }), s2);
+            ext_assert_assert(conn.find_sender(function (s) { return false; }) === undefined);
             conn.close();
         });
         conn.on('connection_close', function () {
@@ -384,13 +383,13 @@ describe('link lookup and iteration', function() {
                 results.push(o.name);
             }
             conn.each_receiver(collect);
-            assert.deepEqual(results, ['foo', 'bar']);
+            ext_assert_assert.deepEqual(results, ['foo', 'bar']);
             results = [];
             conn.each_sender(collect);
-            assert.deepEqual(results, ['oof', 'rab']);
+            ext_assert_assert.deepEqual(results, ['oof', 'rab']);
             results = [];
             conn.each_link(collect);
-            assert.deepEqual(results, ['foo', 'bar', 'oof', 'rab']);
+            ext_assert_assert.deepEqual(results, ['foo', 'bar', 'oof', 'rab']);
             conn.close();
         });
         conn.on('connection_close', function () {
